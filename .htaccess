@@ -4,6 +4,6 @@ RewriteRule    ^mainpage$	drug.html
 RewriteRule    ^drugmenu$	drugmanu1.html
 RewriteRule    ^favourites$	favourites.html
 RewriteRule    ^login$	login_REGISTER.html
-RewriteRule    ^search$	testS.html
+RewriteRule    ^searching$	testS.html
 RewriteRule    ^apple$	index.html
-RewriteRule    ^bb$	login.php
+RewriteRule    ^(\w*)$	$1.php
