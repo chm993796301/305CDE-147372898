@@ -1,0 +1,9 @@
+RewriteEngine on
+RewriteRule    ^test/([a-z]+)/([0-9]+)/?$    check.html?item1=$1&item2=$2    [NC,L]
+RewriteRule    ^mainpage$	drug.html
+RewriteRule    ^drugmenu$	drugmanu1.html
+RewriteRule    ^favourites$	favourites.html
+RewriteRule    ^login$	login_REGISTER.html
+RewriteRule    ^search$	testS.html
+RewriteRule    ^apple$	index.html
+RewriteRule    ^bb$	login.php

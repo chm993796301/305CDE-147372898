@@ -1,0 +1,203 @@
+<!DOCTYPE html> 
+<html>
+<head>
+<meta charset="utf-8">
+<title>jQuery Mobile 網路應用程式</title>
+<link href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" href="themes/drug.css" />
+  <link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
+
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+<script>
+$(document).ready(function() {
+
+
+
+		$("#Registerbtn").click(function() {
+		
+		 var URLs="Register.php";
+          
+		    var Ruserid=$("#Ruserid").val();
+ 			var Rpassid=$("#Rpassid").val();
+			var mailid=$("#nameid").val();
+			var testval = /(\w|\d)+@(\w|\d)+\.\w+/g
+            if(testval.test(mailid)){
+            var myData = 'username='+ Ruserid+"&password="+Rpassid+"&name="+mailid; //build a post data structure
+			//alert(myData);
+            $.ajax({
+                url: URLs,
+                data: myData,
+                type:"POST",
+                dataType:'text',
+
+                success: function(msg){
+                   // alert(msg);
+				   if(msg=="succes"){
+					    alert("succes");
+						Ruserid=$("#Ruserid").val("");
+ 						Rpassid=$("#Rpassid").val("");
+						mailid=$("#nameid").val("");
+						window.location.href="#page";
+					   } else{
+						   alert(msg);
+						   
+						   }
+				   $("#showmsg2").html(msg);
+                },
+                 error:function(xhr, ajaxOptions, thrownError){
+                    alert(xhr.status);
+                    alert(thrownError);
+                 }
+
+				 
+            });
+			}else{
+				alert("your e-mail isn't correct");
+				}
+	
+   
+});
+//-----------------------------------
+		$("#loginbtn").click(function() {
+		//alert("123");
+		 var URLs="login.php";
+          
+		    var userid=$("#userid").val();
+ 			var passid=$("#passid").val();
+		
+            var myData = 'username='+ userid+"&password="+passid; 
+			//alert(myData);
+
+ $.ajax({
+                url: URLs,
+                data: myData,
+                type:"GET",
+                dataType:'text',
+
+                success: function(msg){
+					//alert(msg);
+					   if(msg=="1"){ 
+
+						
+					   alert("welcome,"+userid+".");
+					   	userid=$("#userid").val("");
+ 						passid=$("#passid").val("");
+  							window.location.href="mainpage";
+                             
+                            }else{
+                               alert("Please check your user name and password!");
+                            } 
+	
+                   // alert(msg);
+				   $("#showmsg").html(msg);
+                },
+			     error:function(xhr, ajaxOptions, thrownError){
+                    alert(xhr.status);
+                    alert(thrownError);
+                 }
+				 
+            });
+			/*$.getJSON('login.php',{
+				username: userid,
+				password: passid
+				}, function(data) {
+				$("#showmsg").html("JSON Get");
+               /* data will hold the php array as a javascript object 
+				alert("OK2");
+              $.each(data, function(key, val) {
+              $('#showmsg').append('<li id="' + key + '">' + val.Username + ' ' + val.Password + ' ' + val.Name + ' ' + val.level + ' ' + val.exp123 + '</li>');
+                        });
+                });
+			//alert(data);
+			*/
+   
+});
+
+
+
+
+});
+       
+        </script>
+
+
+
+</head> 
+<body> 
+
+<div data-role="page" id="page">
+	<div data-role="header">
+		<h1>Login</h1>
+	</div>
+    
+    
+	<div data-role="content">
+	  <p>User ID</p>
+		<input type="text" name="login" id="userid">
+	  <p>Password</p>
+       
+         <input type="text" name="pass" id="passid">
+       
+
+		<button id="loginbtn">login</button>
+       <a href="#page2"> <button id="toRegisterbtn">Register</button></a>
+        
+        </div>
+    <p></p>
+    
+     <div id = "showmsg">
+	 
+	 
+	 </div>
+	 
+	 
+	<div data-role="footer" data-position="fixed">
+		<h4></h4>
+	</div>
+
+	
+	
+</div>
+
+
+
+
+
+
+
+<div data-role="page" id="page2">
+	<div data-role="header">
+    <a href="#page" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left" rel='external'>Back</a>
+		<h1>Register</h1>
+	</div>
+	<div data-role="content">
+	  <p>User ID</p>
+		<input type="text" name="Rlogin" id="Ruserid">
+        
+	  <p>Password</p>
+       
+         <input type="text" name="Rpass" id="Rpassid">
+       
+       <p>Email:</p>
+ 		<input type="text" id="nameid" />
+
+        <button id="Registerbtn">Register</button>
+        <a href="#page"> <button id="back">BACK</button></a>
+		</div>
+	<div id = "showmsg2">
+	 
+	 
+	 
+	</div>
+	<div data-role="footer" data-position="fixed">
+		<h4></h4>
+	</div>
+</div>
+
+
+
+
+</body>
+</html>

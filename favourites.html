@@ -1,0 +1,336 @@
+<!DOCTYPE html> 
+<html>
+<head>
+<meta charset="utf-8">
+<title>jQuery Mobile 網路應用程式</title>
+<link href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" rel="stylesheet" type="text/css"/>
+  <link rel="stylesheet" href="themes/drug.css" />
+  <link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
+
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+
+<script>
+
+var user = "";
+var fac = "";
+ //alert("succes");
+function detect(id){
+	//alert('id');
+fac = id;
+			$.getJSON("getpage.php",{
+				forsearch: id
+				}, function(data) {
+				//alert('OK');
+				//$("#showmsg").html("JSON Get");
+		              $.each(data, function(key, c) {
+			  $("#header").html("<a href='#page' class='ui-btn ui-corner-all ui-icon-back ui-btn-icon-left'>Back</a> <p><h4>"+c.name+"</h4></p>");
+			  
+			  $("#commentsheader").html("<a href='#page2' class='ui-btn ui-corner-all ui-icon-back ui-btn-icon-left'>Back</a> <p><h4>"+c.name+"</h4></p>");
+			  $("#addcommentsheader").html("<a href='#page3' class='ui-btn ui-corner-all ui-icon-back ui-btn-icon-left'>Back</a><p><h4>"+c.name+":Add comments</h4></p>");
+			  $("#druginfo").html("<h4>Name:&nbsp;&nbsp;&nbsp;&nbsp;"+c.name+"<br>Type:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"+c.type+"<br>Effect and Danger:<br>"+c.detail+"</h4>");
+			  
+                        });
+				});
+window.location="#page2";
+//alert("var3 :"+fac);	
+
+
+
+}
+
+
+
+function detect2(id){
+	
+fac = id;
+
+	 var URLs="delfavourite.php";
+            var myData = 'name='+user+"&drug="+fac; //build a post data structure
+			//alert(myData);
+            $.ajax({
+                url: URLs,
+                data: myData,
+                type:"DELETE",
+                dataType:'text',
+
+                success: function(msg){
+				alert("succes");
+				location.reload();
+
+
+	
+						   //alert(msg);
+						   
+                },
+                 error:function(xhr, ajaxOptions, thrownError){
+                    alert(xhr.status);
+                    alert(thrownError);
+                 }
+				 
+            });
+
+
+
+}
+
+
+$(document).ready(function() {
+//-------load  
+	var URLs="getuser.php";
+		 $.ajax({
+                url: URLs,
+              //  data: userData,
+                type:"GET",
+                dataType:'text',
+                success: function(msg){	
+						
+				$("#footer").html("<h4>"+msg+"</h4>");				
+				$("#footer2").html("<h4>"+msg+"</h4>");				
+				$("#footer3").html("<h4>"+msg+"</h4>");	
+				$("#footer4").html("<h4>"+msg+"</h4>");	
+				user = msg;
+				
+				$.getJSON("favouriteslist.php",{
+				name: user
+				}, function(data) {
+				
+				// alert("succes2");
+		              $.each(data, function(key, c) {
+              $('#showmsg').append('<h2><a href="#" onclick="detect(this.id)" id="' + c.drugf + '">' + c.drugf + '</a></h2>');
+			   $('#showmsg').append('<h5><a href="#" onclick="detect2(this.id)"  id="' + c.drugf + '">Delete  '+ c.drugf +'</a></h5>');
+			   		//alert("succes3");
+                        });
+						
+						
+						
+});
+				}
+            });
+	var URLs2="getdrug.php";
+		 $.ajax({
+                url: URLs2,
+              //  data: userData,
+                type:"GET",
+                dataType:'text',
+                success: function(msg){			
+				fac = msg;
+				$("#footer4").html("<h4>"+fac+"</h4>");	
+				}
+				 
+            });
+	
+
+//-------load  end
+
+
+//-------add favourites
+$("#addfbtn").click(function() {
+	 var URLs="addfavourites.php";
+            var myData = 'name='+user+"&drug="+fac; //build a post data structure
+			//alert(myData);
+            $.ajax({
+                url: URLs,
+                data: myData,
+                type:"POST",
+                dataType:'text',
+
+                success: function(msg){
+                   //alert(msg);
+				   if(msg=="succes"){
+					    alert("succes");
+						//window.location.href="#page";
+					   } else{
+						   alert(msg);
+						   }
+                },
+                 error:function(xhr, ajaxOptions, thrownError){
+                    alert(xhr.status);
+                    alert(thrownError);
+                 }
+				 
+            });
+
+		});
+		
+//-------add favourites end
+
+//-------comments
+
+
+$("#commentbtn").click(function() {
+	$("#commentlist").html("");
+	$.getJSON("commentlist.php",{
+				drug: fac
+				}, function(data) {
+				//alert('OK');
+				//$("#showmsg").html("JSON Get");
+		              $.each(data, function(key, c) {
+			  $("#commentlist").append("<h4>Name:"+c.name+"<br>comment:"+c.comment+"<br>");
+			  
+                        });
+				});
+	
+	
+	window.location="#page3";
+});
+
+$("#addcommentsbtn").click(function() {
+	window.location="#page4";
+});
+
+//-add comments
+$("#addcsbtn").click(function() {
+ 		var URLs="addcomments.php"; 
+		    var commenttext=$("#comments").val();
+			 var myData = 'name='+user+"&drug="+fac+"&comment="+commenttext;
+		//	alert (myData);
+            $.ajax({
+                url: URLs,
+                data: myData,
+                type:"POST",
+                dataType:'text',
+
+                success: function(msg){
+                   //alert(msg);
+				   if(msg=="succes"){
+					   
+	commenttext=$("#comments").val("");
+			$.getJSON("commentlist.php",{
+				drug: fac
+				}, function(data) {
+				 alert("succes");
+				$("#commentlist").html("");
+		              $.each(data, function(key, c) {
+			  $("#commentlist").append("<h4>Name:"+c.name+"<br>comment:"+c.comment+"<br>");
+			  
+                        });
+				});
+	
+	
+	window.location="#page3";
+						//window.location.href="#page";
+					   } else{
+						  // alert(msg);
+						   }
+                },
+                 error:function(xhr, ajaxOptions, thrownError){
+                    alert(xhr.status);
+                    alert(thrownError);
+                 }
+				 
+            });
+			//-----Refresh
+
+	
+	//window.location="#page2";
+//-----Refresh
+});
+//-add comments end
+//-------comments end
+
+
+
+
+
+
+			 
+
+
+//<div id = "showmsg"></div>
+
+//                               ' <a href="#page2"> <button id="' + key + '">' + c.name + '</button></a>'
+});
+</script>
+
+
+</head> 
+<body> 
+
+<div data-role="page" id="page">
+	<div data-role="header">
+        <a href="mainpage" class="ui-btn ui-corner-all ui-icon-back ui-btn-icon-left" rel='external'>Back</a>
+		<h1>Favourite</h1>
+	</div>
+	<div data-role="content">	
+	
+		
+	</div>
+    <div id = "showmsg">
+   
+    </div>
+	<div data-role="footer" id = "footer" data-position="fixed">
+		<h4></h4>
+	</div>
+</div>
+<p>&nbsp;</p>
+<div data-role="page" id="page2">
+	<div data-role="header" id= "header">
+		
+  </div>
+	<div data-role="content" id= "druginfo">	
+	
+	</div>
+    
+    <div data-role="add" id= "add">	
+     <button id="commentbtn">comments</button>
+    <button id="addfbtn">Add to favourite</button>
+   	
+    </div>
+    
+	<div data-role="footer" id = "footer2" data-position="fixed">
+		<h4></h4>
+	</div>
+</div>
+<p>&nbsp;</p>
+<div data-role="page" id="page3">
+
+	<div data-role="header" id ="commentsheader">
+		<h4>comments</h4>
+  </div>
+  <div data-role="content">
+    <button id="addcommentsbtn">Add comments</button>
+    </div>
+	<div data-role="content" id= "commentlist">	
+    
+	</div>
+    
+	<div data-role="footer" id = "footer3" data-position="fixed" >
+		<h4></h4>
+	</div>
+</div>
+<p>&nbsp;</p>
+<div data-role="page" id="page4">
+
+	<div data-role="header"  id ="addcommentsheader">
+		<h4>Add comments</h4>
+  </div>
+  	<input type="text" name="comments" id="comments">
+    <button id="addcsbtn">Add comments</button>
+	<div data-role="content" id= "content">	
+    
+	</div>
+    
+  <div data-role="footer" id = "footer4" data-position="fixed">
+		<h4></h4>
+	</div>
+</div>
+<p>&nbsp;</p>
+<div data-role="page" id="page5">
+
+	<div data-role="header">
+		<h4>succes</h4>
+  </div>
+  	
+    <a href="#page"><button id="succes">succes</button></a>
+	<div data-role="content" id= "content">	
+    
+	</div>
+    
+	<div data-role="footer" id = "footer5" data-position="fixed">
+		<h4></h4>
+	</div>
+</div>
+
+</body>
+</html>
